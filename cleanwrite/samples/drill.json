@@ -1,0 +1,35 @@
+{
+  "description": "主演练样本：C1 两个地址、C2 无地址；隐藏字段与可见字段都不同",
+  "config": {
+    "new_address_address": null,
+    "new_address_secret_tag": "cfg-default-secret"
+  },
+  "customers": [
+    {
+      "cid": "C1",
+      "name": "甲",
+      "internal_note": "内部一"
+    },
+    {
+      "cid": "C2",
+      "name": "乙",
+      "internal_note": null
+    }
+  ],
+  "addresses": [
+    {
+      "aid": "a1",
+      "cid": "C1",
+      "label": "家",
+      "address": "中山路1号",
+      "secret_tag": "tag-a1"
+    },
+    {
+      "aid": "a2",
+      "cid": "C1",
+      "label": "公司",
+      "address": "解放路9号",
+      "secret_tag": "tag-a2"
+    }
+  ]
+}
