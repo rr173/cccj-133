@@ -1,0 +1,9 @@
+{
+  "version": "cfg-1",
+  "declared_at": "2026-10-01T00:00:00Z",
+  "scopes": [
+    {"schema_name": "A", "obj_type": "TABLE"},
+    {"schema_name": "B", "obj_type": "TABLE"},
+    {"schema_name": "B", "obj_type": "VIEW"}
+  ]
+}

@@ -1,0 +1,4 @@
+instance,generation,obj_type,obj_number,cred,schema_name,object_name,registered_at
+inst1,1,TABLE,101,C-1,A,orders,2026-09-01T00:00:00Z
+inst1,1,TABLE,102,C-2,A,customers,2026-09-01T00:00:00Z
+inst1,1,VIEW,201,C-3,B,v_orders,2026-09-01T00:00:00Z

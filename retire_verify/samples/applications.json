@@ -1,0 +1,15 @@
+[
+  {
+    "app_id": "APP-001",
+    "instance": "inst1",
+    "generation": 1,
+    "obj_type": "TABLE",
+    "obj_number": 101,
+    "cred": "C-1",
+    "last_known_schema": "A",
+    "last_known_name": "orders",
+    "applicant": "wangwu",
+    "reason": "长期未使用，申请退役",
+    "submitted_at": "2026-10-01T09:00:00Z"
+  }
+]

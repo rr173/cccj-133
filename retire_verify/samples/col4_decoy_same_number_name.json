@@ -1,0 +1,19 @@
+{
+  "collection_id": "col-4",
+  "collected_at": "2026-11-11T02:00:00Z",
+  "connector": "mock-catalog",
+  "scopes": [
+    {"schema_name": "A", "obj_type": "TABLE", "status": "complete"},
+    {"schema_name": "B", "obj_type": "TABLE", "status": "complete"},
+    {"schema_name": "B", "obj_type": "VIEW", "status": "complete"}
+  ],
+  "objects": [
+    {"instance": "inst1", "generation": 1, "obj_type": "TABLE", "obj_number": 102,
+     "cred": "C-2", "schema_name": "A", "object_name": "customers"},
+    {"instance": "inst1", "generation": 1, "obj_type": "VIEW", "obj_number": 201,
+     "cred": "C-3", "schema_name": "B", "object_name": "v_orders"},
+    {"instance": "inst1", "generation": 1, "obj_type": "TABLE", "obj_number": 101,
+     "cred": "C-9", "schema_name": "B", "object_name": "orders"}
+  ],
+  "columns": []
+}
