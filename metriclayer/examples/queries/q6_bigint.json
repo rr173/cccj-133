@@ -1,0 +1,7 @@
+{
+  "name": "q6_big_integers_and_null_facts",
+  "description": "128-bit integers kept exact as decimal strings; B's only adjustment has a null amount -> sum null, count 0, rows 1",
+  "metrics": ["big_adjustment_total", "big_adjustment_rows"],
+  "dimensions": ["customer"],
+  "filters": []
+}

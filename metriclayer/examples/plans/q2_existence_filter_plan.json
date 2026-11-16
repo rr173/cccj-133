@@ -1,0 +1,166 @@
+{
+  "query_name": "q2_existence_filter_no_fanout",
+  "dimensions": [],
+  "dimension_details": [],
+  "filters": [
+    {
+      "name": "customers_with_positive_refunds",
+      "kind": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": [
+        "customer"
+      ],
+      "local_paths": {},
+      "predicate": {
+        "eq": {
+          "column": "is_positive",
+          "value": true
+        }
+      }
+    }
+  ],
+  "base_plans": [
+    {
+      "metric": "shipment_count",
+      "kind": "count_rows",
+      "fact": "shipments",
+      "measure": null,
+      "row_predicate": null,
+      "dimension_paths": [],
+      "applied_filters": [
+        {
+          "name": "customers_with_positive_refunds",
+          "scope": "entity population selected by existence on fact 'refunds' via roles customer; applied to this metric through its own roles customer (independent semi-join, no fact-to-fact join)",
+          "predicate": {
+            "eq": {
+              "column": "is_positive",
+              "value": true
+            }
+          }
+        }
+      ],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "shipments",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['(scalar)']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT 1 AS \"measure\"\n  FROM \"shipments\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"\n  WHERE f__customer.\"customer_id\" IN (\n    SELECT DISTINCT sf__customer.\"customer_id\"\n    FROM \"refunds\" \"sf\"\n    LEFT JOIN \"customers\" sf__customer ON sf__customer.\"customer_id\" = sf.\"customer_id\"\n    WHERE sf.\"is_positive\" = ?\n      AND sf__customer.\"customer_id\" IS NOT NULL\n  )",
+      "params": [
+        true
+      ]
+    },
+    {
+      "metric": "shipment_amount",
+      "kind": "sum",
+      "fact": "shipments",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [],
+      "applied_filters": [
+        {
+          "name": "customers_with_positive_refunds",
+          "scope": "entity population selected by existence on fact 'refunds' via roles customer; applied to this metric through its own roles customer (independent semi-join, no fact-to-fact join)",
+          "predicate": {
+            "eq": {
+              "column": "is_positive",
+              "value": true
+            }
+          }
+        }
+      ],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "shipments",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['(scalar)']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"shipments\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"\n  WHERE f__customer.\"customer_id\" IN (\n    SELECT DISTINCT sf__customer.\"customer_id\"\n    FROM \"refunds\" \"sf\"\n    LEFT JOIN \"customers\" sf__customer ON sf__customer.\"customer_id\" = sf.\"customer_id\"\n    WHERE sf.\"is_positive\" = ?\n      AND sf__customer.\"customer_id\" IS NOT NULL\n  )",
+      "params": [
+        true
+      ]
+    },
+    {
+      "metric": "refund_amount",
+      "kind": "sum",
+      "fact": "refunds",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [],
+      "applied_filters": [
+        {
+          "name": "customers_with_positive_refunds",
+          "scope": "entity population selected by existence on fact 'refunds' via roles customer; applied to this metric through its own roles customer (independent semi-join, no fact-to-fact join)",
+          "predicate": {
+            "eq": {
+              "column": "is_positive",
+              "value": true
+            }
+          }
+        }
+      ],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "refunds",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'refunds' aligned to dimensions ['(scalar)']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"refunds\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"\n  WHERE f__customer.\"customer_id\" IN (\n    SELECT DISTINCT sf__customer.\"customer_id\"\n    FROM \"refunds\" \"sf\"\n    LEFT JOIN \"customers\" sf__customer ON sf__customer.\"customer_id\" = sf.\"customer_id\"\n    WHERE sf.\"is_positive\" = ?\n      AND sf__customer.\"customer_id\" IS NOT NULL\n  )",
+      "params": [
+        true
+      ]
+    },
+    {
+      "metric": "all_shipment_amount",
+      "kind": "sum",
+      "fact": "shipments",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [],
+      "applied_filters": [],
+      "ignored_filters": [
+        "customers_with_positive_refunds"
+      ],
+      "joins": [],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['(scalar)']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"shipments\" f",
+      "params": []
+    }
+  ],
+  "derived_plans": [],
+  "ignored": {
+    "all_shipment_amount": [
+      "customers_with_positive_refunds"
+    ]
+  },
+  "read_view": "single SQLite read transaction; one read-only connection per query, all per-fact SQL run against the same snapshot",
+  "notes": [
+    "each base metric reads exactly one fact table at its native row grain; facts are never joined to facts",
+    "existence filters compile to independent NOT/IN semi-joins; two existence filters are evaluated independently and may be satisfied by different fact rows"
+  ]
+}

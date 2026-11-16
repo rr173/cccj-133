@@ -1,0 +1,24 @@
+{
+  "name": "q11_or_and_nested_predicate",
+  "description": "OR of two existence populations: reason 'other' (A via r3) OR (positive AND amount>=2 on the SAME row, E via r6). Nested AND inside one filter means one row must satisfy both.",
+  "metrics": ["shipment_amount", "refund_count"],
+  "dimensions": ["customer"],
+  "filters": [
+    {
+      "name": "other_or_big_positive",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": ["customer"],
+      "predicate": {
+        "or": [
+          {"eq": {"column": "reason_code", "value": "other"}},
+          {"and": [
+            {"eq": {"column": "is_positive", "value": true}},
+            {"gte": {"column": "amount", "value": 2}}
+          ]}
+        ]
+      }
+    }
+  ]
+}

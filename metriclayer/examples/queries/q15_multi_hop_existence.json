@@ -1,0 +1,20 @@
+{
+  "name": "q15_multi_hop_existence_with_local_paths",
+  "description": "existence filter reaches regions through the 2-hop refunds.customer.home_region path. Both refunds and shipments have two ways to reach regions (direct 'region' and customer.home_region), so the local application path is named explicitly in local_paths; without it compilation must refuse rather than guess. Selects customers whose refund chain lands in home region north.",
+  "metrics": ["refund_count", "shipment_amount"],
+  "dimensions": ["customer"],
+  "filters": [
+    {
+      "name": "refund_chain_lands_in_home_north",
+      "type": "existence",
+      "entity": "regions",
+      "fact": "refunds",
+      "roles": ["customer", "home_region"],
+      "local_paths": {
+        "refunds": ["customer", "home_region"],
+        "shipments": ["customer", "home_region"]
+      },
+      "predicate": {"eq": {"column": "region_id", "value": "north"}}
+    }
+  ]
+}

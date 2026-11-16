@@ -1,0 +1,179 @@
+{
+  "query_name": "q3_region_union_grid",
+  "dimensions": [
+    "region"
+  ],
+  "dimension_details": [
+    {
+      "name": "region",
+      "entity": "regions",
+      "attribute": "region_id",
+      "paths": {
+        "shipments": [
+          "region"
+        ],
+        "refunds": [
+          "region"
+        ]
+      }
+    }
+  ],
+  "filters": [],
+  "base_plans": [
+    {
+      "metric": "shipment_count",
+      "kind": "count_rows",
+      "fact": "shipments",
+      "measure": null,
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "region",
+          "roles": [
+            "region"
+          ],
+          "endpoint": "regions",
+          "attribute": "region_id",
+          "nullable_chain": [
+            true
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "region",
+          "from_table": "shipments",
+          "from_alias": "f",
+          "fk_column": "region_id",
+          "to_table": "regions",
+          "to_alias": "f__region",
+          "nullable": true,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['region']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__region.\"region_id\", '__metriclayer__::missing_member__') AS \"dim__region\", 1 AS \"measure\"\n  FROM \"shipments\" f\n  LEFT JOIN \"regions\" f__region ON f__region.\"region_id\" = f.\"region_id\"",
+      "params": []
+    },
+    {
+      "metric": "shipment_amount",
+      "kind": "sum",
+      "fact": "shipments",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "region",
+          "roles": [
+            "region"
+          ],
+          "endpoint": "regions",
+          "attribute": "region_id",
+          "nullable_chain": [
+            true
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "region",
+          "from_table": "shipments",
+          "from_alias": "f",
+          "fk_column": "region_id",
+          "to_table": "regions",
+          "to_alias": "f__region",
+          "nullable": true,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['region']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__region.\"region_id\", '__metriclayer__::missing_member__') AS \"dim__region\", \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"shipments\" f\n  LEFT JOIN \"regions\" f__region ON f__region.\"region_id\" = f.\"region_id\"",
+      "params": []
+    },
+    {
+      "metric": "refund_count",
+      "kind": "count_rows",
+      "fact": "refunds",
+      "measure": null,
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "region",
+          "roles": [
+            "region"
+          ],
+          "endpoint": "regions",
+          "attribute": "region_id",
+          "nullable_chain": [
+            true
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "region",
+          "from_table": "refunds",
+          "from_alias": "f",
+          "fk_column": "region_id",
+          "to_table": "regions",
+          "to_alias": "f__region",
+          "nullable": true,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'refunds' aligned to dimensions ['region']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__region.\"region_id\", '__metriclayer__::missing_member__') AS \"dim__region\", 1 AS \"measure\"\n  FROM \"refunds\" f\n  LEFT JOIN \"regions\" f__region ON f__region.\"region_id\" = f.\"region_id\"",
+      "params": []
+    },
+    {
+      "metric": "refund_amount",
+      "kind": "sum",
+      "fact": "refunds",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "region",
+          "roles": [
+            "region"
+          ],
+          "endpoint": "regions",
+          "attribute": "region_id",
+          "nullable_chain": [
+            true
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "region",
+          "from_table": "refunds",
+          "from_alias": "f",
+          "fk_column": "region_id",
+          "to_table": "regions",
+          "to_alias": "f__region",
+          "nullable": true,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'refunds' aligned to dimensions ['region']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__region.\"region_id\", '__metriclayer__::missing_member__') AS \"dim__region\", \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"refunds\" f\n  LEFT JOIN \"regions\" f__region ON f__region.\"region_id\" = f.\"region_id\"",
+      "params": []
+    }
+  ],
+  "derived_plans": [],
+  "ignored": {},
+  "read_view": "single SQLite read transaction; one read-only connection per query, all per-fact SQL run against the same snapshot",
+  "notes": [
+    "each base metric reads exactly one fact table at its native row grain; facts are never joined to facts",
+    "existence filters compile to independent NOT/IN semi-joins; two existence filters are evaluated independently and may be satisfied by different fact rows"
+  ]
+}

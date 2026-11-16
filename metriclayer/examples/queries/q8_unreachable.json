@@ -1,0 +1,7 @@
+{
+  "name": "q8_unreachable_dimension_must_fail",
+  "description": "no fact declares a path to warehouses: compilation must refuse before any SQL runs",
+  "metrics": ["shipment_amount"],
+  "dimensions": ["warehouse"],
+  "filters": []
+}

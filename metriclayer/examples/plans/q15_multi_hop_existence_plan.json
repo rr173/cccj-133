@@ -1,0 +1,181 @@
+{
+  "query_name": "q15_multi_hop_existence_with_local_paths",
+  "dimensions": [
+    "customer"
+  ],
+  "dimension_details": [
+    {
+      "name": "customer",
+      "entity": "customers",
+      "attribute": "customer_id",
+      "paths": {
+        "shipments": [
+          "customer"
+        ],
+        "refunds": [
+          "customer"
+        ],
+        "adjustments": [
+          "customer"
+        ]
+      }
+    }
+  ],
+  "filters": [
+    {
+      "name": "refund_chain_lands_in_home_north",
+      "kind": "existence",
+      "entity": "regions",
+      "fact": "refunds",
+      "roles": [
+        "customer",
+        "home_region"
+      ],
+      "local_paths": {
+        "refunds": [
+          "customer",
+          "home_region"
+        ],
+        "shipments": [
+          "customer",
+          "home_region"
+        ]
+      },
+      "predicate": {
+        "eq": {
+          "column": "region_id",
+          "value": "north"
+        }
+      }
+    }
+  ],
+  "base_plans": [
+    {
+      "metric": "refund_count",
+      "kind": "count_rows",
+      "fact": "refunds",
+      "measure": null,
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "customer",
+          "roles": [
+            "customer"
+          ],
+          "endpoint": "customers",
+          "attribute": "customer_id",
+          "nullable_chain": [
+            false
+          ]
+        }
+      ],
+      "applied_filters": [
+        {
+          "name": "refund_chain_lands_in_home_north",
+          "scope": "entity population selected by existence on fact 'refunds' via roles customer.home_region; applied to this metric through its own roles customer.home_region (independent semi-join, no fact-to-fact join)",
+          "predicate": {
+            "eq": {
+              "column": "region_id",
+              "value": "north"
+            }
+          }
+        }
+      ],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "refunds",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        },
+        {
+          "role": "home_region",
+          "from_table": "customers",
+          "from_alias": "f__customer",
+          "fk_column": "home_region_id",
+          "to_table": "regions",
+          "to_alias": "f__customer__home_region",
+          "nullable": true,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'refunds' aligned to dimensions ['customer']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__customer.\"customer_id\", '__metriclayer__::missing_member__') AS \"dim__customer\", 1 AS \"measure\"\n  FROM \"refunds\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"\n  LEFT JOIN \"regions\" f__customer__home_region ON f__customer__home_region.\"region_id\" = f__customer.\"home_region_id\"\n  WHERE f__customer__home_region.\"region_id\" IN (\n    SELECT DISTINCT sf__customer__home_region.\"region_id\"\n    FROM \"refunds\" \"sf\"\n    LEFT JOIN \"customers\" sf__customer ON sf__customer.\"customer_id\" = sf.\"customer_id\"\n    LEFT JOIN \"regions\" sf__customer__home_region ON sf__customer__home_region.\"region_id\" = sf__customer.\"home_region_id\"\n    WHERE sf.\"region_id\" = ?\n      AND sf__customer__home_region.\"region_id\" IS NOT NULL\n  )",
+      "params": [
+        "north"
+      ]
+    },
+    {
+      "metric": "shipment_amount",
+      "kind": "sum",
+      "fact": "shipments",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "customer",
+          "roles": [
+            "customer"
+          ],
+          "endpoint": "customers",
+          "attribute": "customer_id",
+          "nullable_chain": [
+            false
+          ]
+        }
+      ],
+      "applied_filters": [
+        {
+          "name": "refund_chain_lands_in_home_north",
+          "scope": "entity population selected by existence on fact 'refunds' via roles customer.home_region; applied to this metric through its own roles customer.home_region (independent semi-join, no fact-to-fact join)",
+          "predicate": {
+            "eq": {
+              "column": "region_id",
+              "value": "north"
+            }
+          }
+        }
+      ],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "shipments",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        },
+        {
+          "role": "home_region",
+          "from_table": "customers",
+          "from_alias": "f__customer",
+          "fk_column": "home_region_id",
+          "to_table": "regions",
+          "to_alias": "f__customer__home_region",
+          "nullable": true,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['customer']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__customer.\"customer_id\", '__metriclayer__::missing_member__') AS \"dim__customer\", \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"shipments\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"\n  LEFT JOIN \"regions\" f__customer__home_region ON f__customer__home_region.\"region_id\" = f__customer.\"home_region_id\"\n  WHERE f__customer__home_region.\"region_id\" IN (\n    SELECT DISTINCT sf__customer__home_region.\"region_id\"\n    FROM \"refunds\" \"sf\"\n    LEFT JOIN \"customers\" sf__customer ON sf__customer.\"customer_id\" = sf.\"customer_id\"\n    LEFT JOIN \"regions\" sf__customer__home_region ON sf__customer__home_region.\"region_id\" = sf__customer.\"home_region_id\"\n    WHERE sf.\"region_id\" = ?\n      AND sf__customer__home_region.\"region_id\" IS NOT NULL\n  )",
+      "params": [
+        "north"
+      ]
+    }
+  ],
+  "derived_plans": [],
+  "ignored": {},
+  "read_view": "single SQLite read transaction; one read-only connection per query, all per-fact SQL run against the same snapshot",
+  "notes": [
+    "each base metric reads exactly one fact table at its native row grain; facts are never joined to facts",
+    "existence filters compile to independent NOT/IN semi-joins; two existence filters are evaluated independently and may be satisfied by different fact rows"
+  ]
+}

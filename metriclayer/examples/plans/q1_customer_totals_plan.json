@@ -1,0 +1,285 @@
+{
+  "query_name": "q1_customer_totals",
+  "dimensions": [
+    "customer"
+  ],
+  "dimension_details": [
+    {
+      "name": "customer",
+      "entity": "customers",
+      "attribute": "customer_id",
+      "paths": {
+        "shipments": [
+          "customer"
+        ],
+        "refunds": [
+          "customer"
+        ],
+        "adjustments": [
+          "customer"
+        ]
+      }
+    }
+  ],
+  "filters": [],
+  "base_plans": [
+    {
+      "metric": "shipment_count",
+      "kind": "count_rows",
+      "fact": "shipments",
+      "measure": null,
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "customer",
+          "roles": [
+            "customer"
+          ],
+          "endpoint": "customers",
+          "attribute": "customer_id",
+          "nullable_chain": [
+            false
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "shipments",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['customer']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__customer.\"customer_id\", '__metriclayer__::missing_member__') AS \"dim__customer\", 1 AS \"measure\"\n  FROM \"shipments\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"",
+      "params": []
+    },
+    {
+      "metric": "shipment_amount",
+      "kind": "sum",
+      "fact": "shipments",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "customer",
+          "roles": [
+            "customer"
+          ],
+          "endpoint": "customers",
+          "attribute": "customer_id",
+          "nullable_chain": [
+            false
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "shipments",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['customer']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__customer.\"customer_id\", '__metriclayer__::missing_member__') AS \"dim__customer\", \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"shipments\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"",
+      "params": []
+    },
+    {
+      "metric": "refund_count",
+      "kind": "count_rows",
+      "fact": "refunds",
+      "measure": null,
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "customer",
+          "roles": [
+            "customer"
+          ],
+          "endpoint": "customers",
+          "attribute": "customer_id",
+          "nullable_chain": [
+            false
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "refunds",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'refunds' aligned to dimensions ['customer']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__customer.\"customer_id\", '__metriclayer__::missing_member__') AS \"dim__customer\", 1 AS \"measure\"\n  FROM \"refunds\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"",
+      "params": []
+    },
+    {
+      "metric": "refund_amount",
+      "kind": "sum",
+      "fact": "refunds",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "customer",
+          "roles": [
+            "customer"
+          ],
+          "endpoint": "customers",
+          "attribute": "customer_id",
+          "nullable_chain": [
+            false
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "refunds",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'refunds' aligned to dimensions ['customer']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__customer.\"customer_id\", '__metriclayer__::missing_member__') AS \"dim__customer\", \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"refunds\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"",
+      "params": []
+    },
+    {
+      "metric": "shipment_amount_rows",
+      "kind": "count",
+      "fact": "shipments",
+      "measure": "amount",
+      "row_predicate": null,
+      "dimension_paths": [
+        {
+          "dimension": "customer",
+          "roles": [
+            "customer"
+          ],
+          "endpoint": "customers",
+          "attribute": "customer_id",
+          "nullable_chain": [
+            false
+          ]
+        }
+      ],
+      "applied_filters": [],
+      "ignored_filters": [],
+      "joins": [
+        {
+          "role": "customer",
+          "from_table": "shipments",
+          "from_alias": "f",
+          "fk_column": "customer_id",
+          "to_table": "customers",
+          "to_alias": "f__customer",
+          "nullable": false,
+          "join": "LEFT JOIN"
+        }
+      ],
+      "intermediate_grain": "rows of fact 'shipments' aligned to dimensions ['customer']; native fact multiplicity preserved, LEFT JOINs are many-to-one",
+      "sql": "SELECT COALESCE(f__customer.\"customer_id\", '__metriclayer__::missing_member__') AS \"dim__customer\", \"f\".\"amount\" AS \"measure\", CASE WHEN \"f\".\"amount\" IS NULL THEN 1 ELSE 0 END AS \"measure_is_null\"\n  FROM \"shipments\" f\n  LEFT JOIN \"customers\" f__customer ON f__customer.\"customer_id\" = f.\"customer_id\"",
+      "params": []
+    }
+  ],
+  "derived_plans": [
+    {
+      "metric": "net_amount",
+      "expression": {
+        "sub": [
+          "shipment_amount",
+          "refund_amount"
+        ]
+      },
+      "base_metrics": [
+        "shipment_amount",
+        "refund_amount"
+      ],
+      "declared_ignores": [],
+      "effective_ignores": []
+    },
+    {
+      "metric": "refund_ratio",
+      "expression": {
+        "div": [
+          "refund_amount",
+          "shipment_amount"
+        ]
+      },
+      "base_metrics": [
+        "refund_amount",
+        "shipment_amount"
+      ],
+      "declared_ignores": [],
+      "effective_ignores": []
+    },
+    {
+      "metric": "avg_shipment",
+      "expression": {
+        "div": [
+          "shipment_amount",
+          "shipment_amount_rows"
+        ]
+      },
+      "base_metrics": [
+        "shipment_amount",
+        "shipment_amount_rows"
+      ],
+      "declared_ignores": [],
+      "effective_ignores": []
+    },
+    {
+      "metric": "scaled_refund",
+      "expression": {
+        "mul": [
+          "refund_amount",
+          "refund_count"
+        ]
+      },
+      "base_metrics": [
+        "refund_amount",
+        "refund_count"
+      ],
+      "declared_ignores": [],
+      "effective_ignores": []
+    }
+  ],
+  "ignored": {
+    "net_amount": [],
+    "refund_ratio": [],
+    "avg_shipment": [],
+    "scaled_refund": []
+  },
+  "read_view": "single SQLite read transaction; one read-only connection per query, all per-fact SQL run against the same snapshot",
+  "notes": [
+    "each base metric reads exactly one fact table at its native row grain; facts are never joined to facts",
+    "existence filters compile to independent NOT/IN semi-joins; two existence filters are evaluated independently and may be satisfied by different fact rows"
+  ]
+}

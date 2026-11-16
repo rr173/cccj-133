@@ -1,0 +1,21 @@
+{
+  "name": "q2_existence_filter_no_fanout",
+  "description": "customers with positive refunds only: shipment total stays 20 (not 60); all_shipment_amount ignores the existence filter and returns 28",
+  "metrics": [
+    "shipment_count",
+    "shipment_amount",
+    "refund_amount",
+    "all_shipment_amount"
+  ],
+  "dimensions": [],
+  "filters": [
+    {
+      "name": "customers_with_positive_refunds",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": ["customer"],
+      "predicate": {"eq": {"column": "is_positive", "value": true}}
+    }
+  ]
+}

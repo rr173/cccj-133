@@ -1,0 +1,21 @@
+{
+  "name": "q13_bigint_ordering_via_udf",
+  "description": "ordering on int columns uses the int_cmp UDF, not text lexicographic order: a 39-digit value is correctly compared against another 39-digit value. Text comparison would order by the first differing digit and get the magnitude wrong; exact integer comparison does not.",
+  "metrics": ["big_adjustment_rows", "big_adjustment_total"],
+  "dimensions": ["customer"],
+  "filters": [
+    {
+      "name": "has_huge_adjustment",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "adjustments",
+      "roles": ["customer"],
+      "predicate": {
+        "gte": {
+          "column": "big_amount",
+          "value": 170141183460469231731687303715884105728
+        }
+      }
+    }
+  ]
+}

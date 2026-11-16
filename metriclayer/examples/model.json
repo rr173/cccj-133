@@ -1,0 +1,274 @@
+{
+  "tables": [
+    {
+      "name": "regions",
+      "kind": "entity",
+      "primary_key": "region_id",
+      "columns": [
+        {"name": "region_id", "type": "text", "nullable": false},
+        {"name": "region_name", "type": "text", "nullable": false}
+      ],
+      "references": []
+    },
+    {
+      "name": "warehouses",
+      "kind": "entity",
+      "primary_key": "warehouse_id",
+      "type_note": "unreachable from adjustments facts — used to prove compile-time rejection",
+      "columns": [
+        {"name": "warehouse_id", "type": "text", "nullable": false},
+        {"name": "warehouse_name", "type": "text", "nullable": false}
+      ],
+      "references": []
+    },
+    {
+      "name": "customers",
+      "kind": "entity",
+      "primary_key": "customer_id",
+      "columns": [
+        {"name": "customer_id", "type": "text", "nullable": false},
+        {"name": "customer_name", "type": "text", "nullable": false},
+        {"name": "tier", "type": "text", "nullable": false},
+        {"name": "home_region_id", "type": "text", "nullable": true},
+        {"name": "is_gold", "type": "bool", "nullable": false}
+      ],
+      "references": [
+        {
+          "column": "home_region_id",
+          "target": "regions",
+          "target_column": "region_id",
+          "role": "home_region",
+          "nullable_comment": "nullable reference: null stays a missing member"
+        }
+      ]
+    },
+    {
+      "name": "shipments",
+      "kind": "fact",
+      "primary_key": "shipment_id",
+      "columns": [
+        {"name": "shipment_id", "type": "int", "nullable": false},
+        {"name": "customer_id", "type": "text", "nullable": false},
+        {"name": "region_id", "type": "text", "nullable": true},
+        {"name": "amount", "type": "int", "nullable": true},
+        {"name": "priority", "type": "bool", "nullable": false}
+      ],
+      "references": [
+        {
+          "column": "customer_id",
+          "target": "customers",
+          "target_column": "customer_id",
+          "role": "customer"
+        },
+        {
+          "column": "region_id",
+          "target": "regions",
+          "target_column": "region_id",
+          "role": "region",
+          "nullable_comment": "nullable: a shipment may have no region"
+        }
+      ]
+    },
+    {
+      "name": "refunds",
+      "kind": "fact",
+      "primary_key": "refund_id",
+      "columns": [
+        {"name": "refund_id", "type": "int", "nullable": false},
+        {"name": "customer_id", "type": "text", "nullable": false},
+        {"name": "region_id", "type": "text", "nullable": true},
+        {"name": "amount", "type": "int", "nullable": false},
+        {"name": "is_positive", "type": "bool", "nullable": false},
+        {"name": "reason_code", "type": "text", "nullable": true}
+      ],
+      "references": [
+        {
+          "column": "customer_id",
+          "target": "customers",
+          "target_column": "customer_id",
+          "role": "customer"
+        },
+        {
+          "column": "region_id",
+          "target": "regions",
+          "target_column": "region_id",
+          "role": "region",
+          "nullable_comment": "nullable: a refund may have no region"
+        }
+      ]
+    },
+    {
+      "name": "adjustments",
+      "kind": "fact",
+      "primary_key": "adjustment_id",
+      "columns": [
+        {"name": "adjustment_id", "type": "text", "nullable": false},
+        {"name": "customer_id", "type": "text", "nullable": false},
+        {"name": "big_amount", "type": "int", "nullable": true}
+      ],
+      "references": [
+        {
+          "column": "customer_id",
+          "target": "customers",
+          "target_column": "customer_id",
+          "role": "customer"
+        }
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "name": "shipment_count",
+      "kind": "count_rows",
+      "fact": "shipments",
+      "ignore_filters": []
+    },
+    {
+      "name": "shipment_amount",
+      "kind": "sum",
+      "fact": "shipments",
+      "measure": "amount",
+      "ignore_filters": []
+    },
+    {
+      "name": "shipment_amount_rows",
+      "kind": "count",
+      "fact": "shipments",
+      "measure": "amount",
+      "ignore_filters": []
+    },
+    {
+      "name": "distinct_shipment_amounts",
+      "kind": "count_distinct",
+      "fact": "shipments",
+      "measure": "amount",
+      "ignore_filters": []
+    },
+    {
+      "name": "distinct_refund_reasons",
+      "kind": "count_distinct",
+      "fact": "refunds",
+      "measure": "reason_code",
+      "ignore_filters": []
+    },
+    {
+      "name": "refund_count",
+      "kind": "count_rows",
+      "fact": "refunds",
+      "ignore_filters": []
+    },
+    {
+      "name": "refund_amount",
+      "kind": "sum",
+      "fact": "refunds",
+      "measure": "amount",
+      "ignore_filters": []
+    },
+    {
+      "name": "refund_amount_rows",
+      "kind": "count",
+      "fact": "refunds",
+      "measure": "amount",
+      "ignore_filters": []
+    },
+    {
+      "name": "positive_refund_count",
+      "kind": "count_rows",
+      "fact": "refunds",
+      "row_predicate": {"eq": {"column": "is_positive", "value": true}},
+      "ignore_filters": []
+    },
+    {
+      "name": "all_shipment_amount",
+      "kind": "sum",
+      "fact": "shipments",
+      "measure": "amount",
+      "ignore_filters_comment": "this metric declares per-query ignores in the query layer; see q2",
+      "ignore_filters": ["customers_with_positive_refunds"]
+    },
+    {
+      "name": "big_adjustment_total",
+      "kind": "sum",
+      "fact": "adjustments",
+      "measure": "big_amount",
+      "ignore_filters": []
+    },
+    {
+      "name": "big_adjustment_rows",
+      "kind": "count_rows",
+      "fact": "adjustments",
+      "ignore_filters": []
+    },
+    {
+      "name": "net_amount",
+      "kind": "derived",
+      "expression": {"sub": ["shipment_amount", "refund_amount"]},
+      "ignore_filters": []
+    },
+    {
+      "name": "refund_ratio",
+      "kind": "derived",
+      "expression": {"div": ["refund_amount", "shipment_amount"]},
+      "ignore_filters": []
+    },
+    {
+      "name": "avg_shipment",
+      "kind": "derived",
+      "expression": {"div": ["shipment_amount", "shipment_amount_rows"]},
+      "ignore_filters": []
+    },
+    {
+      "name": "scaled_refund",
+      "kind": "derived",
+      "expression": {"mul": ["refund_amount", "refund_count"]},
+      "ignore_filters": []
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "customer",
+      "entity": "customers",
+      "attribute": "customer_id",
+      "paths": {
+        "shipments": ["customer"],
+        "refunds": ["customer"],
+        "adjustments": ["customer"]
+      }
+    },
+    {
+      "name": "customer_tier",
+      "entity": "customers",
+      "attribute": "tier",
+      "paths": {
+        "shipments": ["customer"],
+        "refunds": ["customer"],
+        "adjustments": ["customer"]
+      }
+    },
+    {
+      "name": "region",
+      "entity": "regions",
+      "attribute": "region_id",
+      "paths": {
+        "shipments": ["region"],
+        "refunds": ["region"]
+      }
+    },
+    {
+      "name": "home_region",
+      "entity": "regions",
+      "attribute": "region_id",
+      "paths": {
+        "shipments": ["customer", "home_region"],
+        "refunds": ["customer", "home_region"]
+      }
+    },
+    {
+      "name": "warehouse",
+      "entity": "warehouses",
+      "attribute": "warehouse_id",
+      "paths_comment": "no fact has a path to warehouses: querying this dimension must be rejected before execution",
+      "paths": {}
+    }
+  ]
+}

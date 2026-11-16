@@ -1,0 +1,24 @@
+{
+  "name": "q4_two_independent_existence_filters",
+  "description": "two existence filters are evaluated independently and may be satisfied by different fact rows: D has a damaged row (r4) and a zero row (r5)",
+  "metrics": ["shipment_amount", "refund_count", "refund_amount"],
+  "dimensions": ["customer"],
+  "filters": [
+    {
+      "name": "has_damaged_refund",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": ["customer"],
+      "predicate": {"eq": {"column": "reason_code", "value": "damaged"}}
+    },
+    {
+      "name": "has_zero_refund",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": ["customer"],
+      "predicate": {"eq": {"column": "amount", "value": 0}}
+    }
+  ]
+}

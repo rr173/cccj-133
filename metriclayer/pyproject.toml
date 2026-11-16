@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "metriclayer"
+version = "1.0.0"
+description = "Typed, path-explicit semantic metric layer over SQLite with exact arithmetic"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools]
+packages = ["metriclayer"]
+
+[project.scripts]
+metriclayer = "metriclayer.cli:main"

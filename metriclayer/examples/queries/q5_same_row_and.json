@@ -1,0 +1,21 @@
+{
+  "name": "q5_same_row_and_vs_independent",
+  "description": "requiring the SAME fact row to satisfy both predicates (AND inside one filter): no refund row is both damaged and zero -> empty result",
+  "metrics": ["refund_count", "refund_amount"],
+  "dimensions": ["customer"],
+  "filters": [
+    {
+      "name": "has_damaged_zero_same_row",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": ["customer"],
+      "predicate": {
+        "and": [
+          {"eq": {"column": "reason_code", "value": "damaged"}},
+          {"eq": {"column": "amount", "value": 0}}
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "q3_region_union_grid",
+  "description": "region 'south' appears only in refunds; missing region is the collision-free MISSING marker. Cells are the union of both facts' cells.",
+  "metrics": [
+    "shipment_count",
+    "shipment_amount",
+    "refund_count",
+    "refund_amount"
+  ],
+  "dimensions": ["region"],
+  "filters": []
+}

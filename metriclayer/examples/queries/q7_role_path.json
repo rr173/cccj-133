@@ -1,0 +1,7 @@
+{
+  "name": "q7_named_role_path",
+  "description": "two roles reach regions (direct fact.region vs customer.home_region); the dimension names the path explicitly",
+  "metrics": ["shipment_count", "shipment_amount", "refund_count"],
+  "dimensions": ["home_region"],
+  "filters": []
+}

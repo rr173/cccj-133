@@ -1,0 +1,32 @@
+{
+  "name": "q10_predicate_gallery",
+  "description": "independent existence filters combined with AND: lt + is_null + in must all hold (on different fact rows). D is the only customer in all three populations.",
+  "metrics": ["shipment_amount", "refund_count"],
+  "dimensions": ["customer"],
+  "filters": [
+    {
+      "name": "refund_under_two",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": ["customer"],
+      "predicate": {"lt": {"column": "amount", "value": 2}}
+    },
+    {
+      "name": "refund_without_reason",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": ["customer"],
+      "predicate": {"is_null": {"column": "reason_code", "value": true}}
+    },
+    {
+      "name": "refund_reason_in_set",
+      "type": "existence",
+      "entity": "customers",
+      "fact": "refunds",
+      "roles": ["customer"],
+      "predicate": {"in": {"column": "reason_code", "values": ["damaged", "late"]}}
+    }
+  ]
+}

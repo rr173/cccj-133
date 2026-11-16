@@ -1,0 +1,16 @@
+{
+  "name": "q1_customer_totals",
+  "description": "per-customer shipments vs refunds: refund sum is null for B, refund rows 0",
+  "metrics": [
+    "shipment_count",
+    "shipment_amount",
+    "refund_count",
+    "refund_amount",
+    "net_amount",
+    "refund_ratio",
+    "avg_shipment",
+    "scaled_refund"
+  ],
+  "dimensions": ["customer"],
+  "filters": []
+}

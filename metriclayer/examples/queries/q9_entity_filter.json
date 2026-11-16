@@ -1,0 +1,15 @@
+{
+  "name": "q9_entity_attribute_filter",
+  "description": "filter on the customers entity along the explicit customer role; bool is_gold=true selects A only",
+  "metrics": ["shipment_amount", "refund_amount", "refund_count"],
+  "dimensions": ["customer"],
+  "filters": [
+    {
+      "name": "gold_customers_only",
+      "type": "entity",
+      "entity": "customers",
+      "roles": ["customer"],
+      "predicate": {"eq": {"column": "is_gold", "value": true}}
+    }
+  ]
+}

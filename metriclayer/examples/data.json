@@ -1,0 +1,38 @@
+{
+  "regions": [
+    {"region_id": "north", "region_name": "North"},
+    {"region_id": "south", "region_name": "South"},
+    {"region_id": "east",  "region_name": "East"}
+  ],
+  "warehouses": [
+    {"warehouse_id": "wh1", "warehouse_name": "Main warehouse"}
+  ],
+  "customers": [
+    {"customer_id": "A", "customer_name": "Alice Co",   "tier": "gold",   "home_region_id": "north", "is_gold": true},
+    {"customer_id": "B", "customer_name": "Bravo Ltd",  "tier": "silver", "home_region_id": "north", "is_gold": false},
+    {"customer_id": "D", "customer_name": "Delta Inc",  "tier": "silver", "home_region_id": null,    "is_gold": false},
+    {"customer_id": "E", "customer_name": "Echo Group", "tier": "bronze", "home_region_id": "east",  "is_gold": false}
+  ],
+  "shipments": [
+    {"shipment_id": 1, "customer_id": "A", "region_id": "north", "amount": 10, "priority": true},
+    {"shipment_id": 2, "customer_id": "A", "region_id": "north", "amount": 10, "priority": false},
+    {"shipment_id": 3, "customer_id": "A", "region_id": null,    "amount": null, "priority": false},
+    {"shipment_id": 4, "customer_id": "B", "region_id": null,    "amount": 8,  "priority": false},
+    {"shipment_id": 5, "customer_id": "D", "region_id": null,    "amount": null, "priority": false},
+    {"shipment_id": 6, "customer_id": "D", "region_id": null,    "amount": null, "priority": true}
+  ],
+  "refunds": [
+    {"refund_id": 1, "customer_id": "A", "region_id": "north", "amount": 1, "is_positive": true,  "reason_code": "damaged"},
+    {"refund_id": 2, "customer_id": "A", "region_id": "north", "amount": 1, "is_positive": true,  "reason_code": "late"},
+    {"refund_id": 3, "customer_id": "A", "region_id": "south", "amount": 1, "is_positive": true,  "reason_code": "other"},
+    {"refund_id": 4, "customer_id": "D", "region_id": null,    "amount": 1, "is_positive": false, "reason_code": "damaged"},
+    {"refund_id": 5, "customer_id": "D", "region_id": null,    "amount": 0, "is_positive": false, "reason_code": "goodwill"},
+    {"refund_id": 6, "customer_id": "E", "region_id": "east",  "amount": 2, "is_positive": true,  "reason_code": "late"},
+    {"refund_id": 7, "customer_id": "D", "region_id": null,    "amount": 3, "is_positive": false, "reason_code": null}
+  ],
+  "adjustments": [
+    {"adjustment_id": "adj1", "customer_id": "A", "big_amount": "170141183460469231731687303715884105727"},
+    {"adjustment_id": "adj2", "customer_id": "A", "big_amount": "170141183460469231731687303715884105727"},
+    {"adjustment_id": "adj3", "customer_id": "B", "big_amount": null}
+  ]
+}

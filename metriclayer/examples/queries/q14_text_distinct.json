@@ -1,0 +1,7 @@
+{
+  "name": "q14_text_distinct_count",
+  "description": "distinct count on a nullable text column. A has reasons damaged/late/other -> 3 distinct; D has damaged/goodwill/null -> 2 distinct non-null (null excluded); E has late -> 1",
+  "metrics": ["refund_count", "distinct_refund_reasons"],
+  "dimensions": ["customer"],
+  "filters": []
+}
